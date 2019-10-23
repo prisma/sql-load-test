@@ -1,14 +1,20 @@
 [package]
-name = "sql-load-test"
-version = "0.1.0"
 authors = ["Julius de Bruijn <bruijn@prisma.io>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+name = "sql-load-test"
+version = "0.1.0"
 
 [dependencies]
 csv = "1.1"
+derive_builder = "0.8"
+indicatif = "0.12"
+lazy_static = "1.4"
+names = "0.11"
+rand = "0.7"
 serde = "1.0"
 serde_derive = "1.0"
-chrono = { version = "0.4", features = ["serde"] }
-derive_builder = "0.8"
+console = "0.9"
+
+[dependencies.chrono]
+features = ["serde"]
+version = "0.4"
