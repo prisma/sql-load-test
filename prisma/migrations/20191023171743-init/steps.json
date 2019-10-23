@@ -22,11 +22,6 @@
       "embedded": false
     },
     {
-      "stepType": "CreateModel",
-      "name": "Group",
-      "embedded": false
-    },
-    {
       "stepType": "CreateField",
       "model": "User",
       "name": "id",
@@ -172,23 +167,6 @@
     {
       "stepType": "CreateField",
       "model": "User",
-      "name": "groups",
-      "type": {
-        "Relation": {
-          "to": "Group",
-          "to_fields": [
-            "id"
-          ],
-          "name": "GroupToUser",
-          "on_delete": "None"
-        }
-      },
-      "arity": "list",
-      "isUnique": false
-    },
-    {
-      "stepType": "CreateField",
-      "model": "User",
       "name": "createdAt",
       "type": {
         "Base": "DateTime"
@@ -386,6 +364,33 @@
     },
     {
       "stepType": "CreateField",
+      "model": "Comment",
+      "name": "createdAt",
+      "type": {
+        "Base": "DateTime"
+      },
+      "arity": "required",
+      "isUnique": false,
+      "default": {
+        "Expression": [
+          "now",
+          "DateTime",
+          []
+        ]
+      }
+    },
+    {
+      "stepType": "CreateField",
+      "model": "Comment",
+      "name": "updatedAt",
+      "type": {
+        "Base": "DateTime"
+      },
+      "arity": "required",
+      "isUnique": false
+    },
+    {
+      "stepType": "CreateField",
       "model": "Like",
       "name": "id",
       "type": {
@@ -451,53 +456,29 @@
     },
     {
       "stepType": "CreateField",
-      "model": "Group",
-      "name": "id",
+      "model": "Like",
+      "name": "createdAt",
       "type": {
-        "Base": "Int"
+        "Base": "DateTime"
       },
       "arity": "required",
-      "isUnique": true,
-      "id": {
-        "strategy": "Auto",
-        "sequence": null
+      "isUnique": false,
+      "default": {
+        "Expression": [
+          "now",
+          "DateTime",
+          []
+        ]
       }
     },
     {
       "stepType": "CreateField",
-      "model": "Group",
-      "name": "topic",
+      "model": "Like",
+      "name": "updatedAt",
       "type": {
-        "Base": "String"
+        "Base": "DateTime"
       },
       "arity": "required",
-      "isUnique": false
-    },
-    {
-      "stepType": "CreateField",
-      "model": "Group",
-      "name": "description",
-      "type": {
-        "Base": "String"
-      },
-      "arity": "optional",
-      "isUnique": false
-    },
-    {
-      "stepType": "CreateField",
-      "model": "Group",
-      "name": "members",
-      "type": {
-        "Relation": {
-          "to": "User",
-          "to_fields": [
-            "id"
-          ],
-          "name": "GroupToUser",
-          "on_delete": "None"
-        }
-      },
-      "arity": "list",
       "isUnique": false
     }
   ]

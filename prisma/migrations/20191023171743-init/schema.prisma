@@ -19,7 +19,6 @@ model User {
   likes      Like[]
   friendWith User[]    @relation("FriendShip")
   friendOf   User[]    @relation("FriendShip")
-  groups     Group[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
@@ -40,6 +39,8 @@ model Comment {
   author    User
   post      Post
   likes     Like[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Like {
@@ -47,11 +48,6 @@ model Like {
   user      User
   post      Post
   comment   Comment
-}
-
-model Group {
-  id          Int       @id @unique
-  topic       String
-  description String?
-  members     User[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
