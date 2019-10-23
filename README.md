@@ -57,6 +57,7 @@ psql -h localhost -U postgres -d postgres
 ```
 
 ``` sql
+set search_path = "sql_load_test";
 \copy "User" FROM './output/users.csv' WITH DELIMITER ';' CSV HEADER;
 \copy "Post" FROM './output/posts.csv' WITH DELIMITER ';' CSV HEADER;
 \copy "Comment" FROM './output/comments.csv' WITH DELIMITER ';' CSV HEADER;
