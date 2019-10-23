@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator photon {
+  provider = "photonjs"
+}
+
+model User {
+  id         Int       @id @unique
+  firstName  String
+  lastName   String
+  age        Int?
+  email      String?
+  password   String?
+  posts      Post[]
+  comments   Comment[]
+  likes      Like[]
+  friendWith User[]    @relation("FriendShip")
+  friendOf   User[]    @relation("FriendShip")
+  groups     Group[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Post {
+  id        Int       @id @unique
+  content   String?
+  author    User
+  comments  Comment[]
+  likes     Like[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id        Int       @id @unique
+  content   String?
+  author    User
+  post      Post
+  likes     Like[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Like {
+  id        Int       @id @unique
+  user      User
+  post      Post
+  comment   Comment
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Group {
+  id          Int       @id @unique
+  topic       String
+  description String?
+  members     User[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
