@@ -1,5 +1,6 @@
 mod schema;
 
+use clap::{App, Arg};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::{
     error::Error,
@@ -7,7 +8,6 @@ use std::{
     io::Write,
     thread::{self, JoinHandle},
 };
-use clap::{App, Arg};
 
 pub type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync + 'static>>;
 
@@ -24,6 +24,12 @@ pub fn namify(s: String) -> String {
     v[0] = v[0].to_uppercase().nth(0).unwrap();
 
     v.into_iter().collect()
+}
+
+fn progress_style(name: &str) -> ProgressStyle {
+    ProgressStyle::default_bar()
+        .progress_chars("##-")
+        .template(&format!("{}: {{spinner:.green}} [{{elapsed_precise}}] {{wide_bar:.white/blue}} {{pos:>7}}/{{len:7}} ({{eta}})", name))
 }
 
 fn main() -> crate::Result<()> {
@@ -85,16 +91,9 @@ fn main() -> crate::Result<()> {
 
     let m = MultiProgress::new();
 
-    let style = ProgressStyle::default_bar().progress_chars("##-");
-
     {
         let pb = m.add(ProgressBar::new(user_count as u64));
-
-        let style = style
-            .clone()
-            .template("   generating users: {spinner:.green} [{elapsed_precise}] {wide_bar:.white/blue} {pos:>7}/{len:7} ({eta})");
-
-        pb.set_style(style);
+        pb.set_style(progress_style("   generating users"));
 
         let _: JoinHandle<Result<()>> = thread::spawn(move || {
             let file = File::create("./output/users.csv")?;
@@ -105,12 +104,7 @@ fn main() -> crate::Result<()> {
 
     {
         let pb = m.add(ProgressBar::new(post_count as u64));
-
-        let style = style
-            .clone()
-            .template("   generating posts: {spinner:.green} [{elapsed_precise}] {wide_bar:.white/blue} {pos:>7}/{len:7} ({eta})");
-
-        pb.set_style(style);
+        pb.set_style(progress_style("   generating posts"));
 
         let _: JoinHandle<Result<()>> = thread::spawn(move || {
             let file = File::create("./output/posts.csv")?;
@@ -121,32 +115,32 @@ fn main() -> crate::Result<()> {
 
     {
         let pb = m.add(ProgressBar::new(comment_count as u64));
-
-        let style = style
-            .clone()
-            .template("generating comments: {spinner:.green} [{elapsed_precise}] {wide_bar:.white/blue} {pos:>7}/{len:7} ({eta})");
-
-        pb.set_style(style);
+        pb.set_style(progress_style("generating comments"));
 
         let _: JoinHandle<Result<()>> = thread::spawn(move || {
             let file = File::create("./output/comments.csv")?;
-            schema::Comment::generate(file, comment_count, pb, schema::CommentContext::new(user_count, post_count))?;
+            schema::Comment::generate(
+                file,
+                comment_count,
+                pb,
+                schema::CommentContext::new(user_count, post_count),
+            )?;
             Ok(())
         });
     }
 
     {
         let pb = m.add(ProgressBar::new(like_count as u64));
-
-        let style = style
-            .clone()
-            .template("   generating likes: {spinner:.green} [{elapsed_precise}] {wide_bar:.white/blue} {pos:>7}/{len:7} ({eta})");
-
-        pb.set_style(style);
+        pb.set_style(progress_style("   generating likes"));
 
         let _: JoinHandle<Result<()>> = thread::spawn(move || {
             let file = File::create("./output/likes.csv")?;
-            schema::Like::generate(file, like_count, pb, schema::LikeContext::new(user_count, post_count, comment_count))?;
+            schema::Like::generate(
+                file,
+                like_count,
+                pb,
+                schema::LikeContext::new(user_count, post_count, comment_count),
+            )?;
             Ok(())
         });
     }
