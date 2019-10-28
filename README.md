@@ -48,18 +48,3 @@ OPTIONS:
     -p, --posts <num_posts>          The number of generated posts.
     -u, --users <num_users>          The number of generated users.
 ```
-
-For now the files must be copied to the database manually. Later on this will be
-automated. (the default password is `prisma`)
-
-``` shell
-psql -h localhost -U postgres -d postgres
-```
-
-``` sql
-set search_path = "sql_load_test";
-\copy "User" FROM './output/users.csv' WITH DELIMITER ';' CSV HEADER;
-\copy "Post" FROM './output/posts.csv' WITH DELIMITER ';' CSV HEADER;
-\copy "Comment" FROM './output/comments.csv' WITH DELIMITER ';' CSV HEADER;
-\copy "Like" FROM './output/likes.csv' WITH DELIMITER ';' CSV HEADER;
-```
