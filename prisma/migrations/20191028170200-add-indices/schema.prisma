@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:prisma@localhost:5432/postgres?schema=sql_load_test"
+  url = "***"
 }
 
 generator photon {
