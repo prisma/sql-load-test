@@ -17,6 +17,8 @@ console = "0.9"
 structopt = "0.3"
 postgres = "0.17.0-alpha.1"
 indoc = "0.3"
+r2d2 = "0.8"
+r2d2_postgres = "0.16.0-alpha.1"
 
 [dependencies.chrono]
 features = ["serde"]
