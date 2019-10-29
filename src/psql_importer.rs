@@ -83,11 +83,13 @@ impl Importer {
                     DELIMITER ';' CSV HEADER
                 ", table, col_names.join(","));
 
-                let mut f = File::open(format!("./output/{}s.csv", table.to_lowercase()).as_str())?;
-                client.copy_in(&*query, &[], &mut f)?;
+                for file in std::fs::read_dir(format!("./output/{}s/", table.to_lowercase()))? {
+                    let mut f = File::open(file?.path())?;
+                    client.copy_in(&*query, &[], &mut f)?;
+                }
             }
 
-            client.execute("ALTER TABLE \"User\" ENABLE TRIGGER ALL", &[])?;
+            client.execute(format!("ALTER TABLE \"{}\" ENABLE TRIGGER ALL", table).as_str(), &[])?;
 
             Ok(())
         })

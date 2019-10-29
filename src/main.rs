@@ -122,7 +122,7 @@ fn main() -> crate::Result<()> {
     let opts = Opt::from_args();
 
     CsvGenerator::new(&opts).generate()?;
-    Importer::new(&opts)?.import()?;
+    //Importer::new(&opts)?.import()?;
 
     Ok(())
 }
