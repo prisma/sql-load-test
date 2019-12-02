@@ -2,18 +2,18 @@ use super::ser_date;
 use crate::Generator;
 use chrono::{DateTime, Utc};
 use csv::WriterBuilder;
+use indicatif::ProgressBar;
 use rand::seq::SliceRandom;
 use serde_derive::Serialize;
 use std::io::Write;
-use indicatif::ProgressBar;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Like {
     id: usize,
-    comment: Option<usize>,
-    post: Option<usize>,
-    user: Option<usize>,
+    comment: usize,
+    post: usize,
+    user: usize,
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
     #[serde(with = "ser_date")]
@@ -37,20 +37,13 @@ impl LikeContext {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
-enum LikeChoice {
-    User,
-    Post,
-    Comment
-}
-
 impl Default for Like {
     fn default() -> Self {
         Self {
             id: 0,
-            user: None,
-            comment: None,
-            post: None,
+            user: 0,
+            comment: 0,
+            post: 0,
             created_at: Utc::now(),
             updated_at: Utc::now(),
         }
@@ -60,7 +53,12 @@ impl Default for Like {
 impl Generator for Like {
     type Context = LikeContext;
 
-    fn generate<W>(writer: W, count: usize, pb: ProgressBar, ctx: Self::Context) -> crate::Result<()>
+    fn generate<W>(
+        writer: W,
+        count: usize,
+        pb: ProgressBar,
+        ctx: Self::Context,
+    ) -> crate::Result<()>
     where
         W: Write,
     {
@@ -74,17 +72,13 @@ impl Generator for Like {
         let post_choices: Vec<usize> = (1..=ctx.max_post).collect();
         let comment_choices: Vec<usize> = (1..=ctx.max_comment).collect();
 
-        let like_choices = [LikeChoice::User, LikeChoice::Post, LikeChoice::Comment];
-
         for id in 1..=count {
             let mut like = Like::default();
-            like.id = id;
 
-            match *like_choices.choose(&mut rng).unwrap() {
-                LikeChoice::User => like.user = Some(*user_choices.choose(&mut rng).unwrap()),
-                LikeChoice::Post => like.post = Some(*post_choices.choose(&mut rng).unwrap()),
-                LikeChoice::Comment => like.comment = Some(*comment_choices.choose(&mut rng).unwrap()),
-            }
+            like.id = id;
+            like.user = *user_choices.choose(&mut rng).unwrap();
+            like.post = *post_choices.choose(&mut rng).unwrap();
+            like.comment = *comment_choices.choose(&mut rng).unwrap();
 
             wtr.serialize(like)?;
             pb.inc(1);
