@@ -1,4 +1,4 @@
-use super::{schema, Generator, Opt};
+use super::{schema, Generator};
 use console::{pad_str, Alignment};
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::{
@@ -15,7 +15,7 @@ pub struct CsvGenerator {
 }
 
 impl CsvGenerator {
-    pub fn new(opts: &Opt) -> Self {
+    pub fn new(opts: &super::Generate) -> Self {
         Self {
             users: opts.users(),
             posts: opts.posts(),
