@@ -8,7 +8,7 @@ use psql_importer::Importer;
 use std::io::Write;
 use structopt::StructOpt;
 
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
+pub type Result<T> = std::result::Result<T, anyhow::Error>;
 
 pub trait Generator {
     type Context;
@@ -27,7 +27,17 @@ pub fn namify(s: String) -> String {
 
 #[derive(Debug, StructOpt, Clone)]
 /// Prisma Test Data Generator
-pub struct Opt {
+pub enum Opt {
+    /// Generate sample data as CSV.
+    #[structopt(name = "generate")]
+    Generate(Generate),
+    /// Import the generated CSVs into postgres.
+    #[structopt(name = "import-postgres")]
+    ImportPostgres(ImportPostgres),
+}
+
+#[derive(Debug, StructOpt, Clone)]
+pub struct Generate {
     #[structopt(short, long)]
     /// Number of users to generate in the system. (default: 10k)
     users: Option<usize>,
@@ -40,7 +50,10 @@ pub struct Opt {
     #[structopt(short, long)]
     /// Number of likes to generate in the system. (default: users * 50)
     likes: Option<usize>,
+}
 
+#[derive(Debug, StructOpt, Clone)]
+pub struct ImportPostgres {
     #[structopt(long)]
     /// Login name to the PostgreSQL database.
     db_user: Option<String>,
@@ -61,23 +74,7 @@ pub struct Opt {
     db_port: Option<u16>,
 }
 
-impl Opt {
-    fn users(&self) -> usize {
-        self.users.unwrap_or(10_000)
-    }
-
-    fn posts(&self) -> usize {
-        self.posts.unwrap_or(self.users() * 10)
-    }
-
-    fn comments(&self) -> usize {
-        self.comments.unwrap_or(self.users() * 10)
-    }
-
-    fn likes(&self) -> usize {
-        self.likes.unwrap_or(self.users() * 50)
-    }
-
+impl ImportPostgres {
     fn db_user(&self) -> &str {
         self.db_user
             .as_ref()
@@ -118,11 +115,30 @@ impl Opt {
     }
 }
 
+impl Generate {
+    fn users(&self) -> usize {
+        self.users.unwrap_or(10_000)
+    }
+
+    fn posts(&self) -> usize {
+        self.posts.unwrap_or(self.users() * 10)
+    }
+
+    fn comments(&self) -> usize {
+        self.comments.unwrap_or(self.users() * 10)
+    }
+
+    fn likes(&self) -> usize {
+        self.likes.unwrap_or(self.users() * 50)
+    }
+}
+
 fn main() -> crate::Result<()> {
     let opts = Opt::from_args();
 
-    CsvGenerator::new(&opts).generate()?;
-    Importer::new(&opts)?.import()?;
-
-    Ok(())
+    match opts {
+        Opt::Generate(generate) => CsvGenerator::new(&generate).generate(),
+        Opt::ImportPostgres(import_postgres) => Importer::new(&import_postgres)?.import(),
+        Opt::ImportSqlite {} => unimplemented!("SQLite import"),
+    }
 }
