@@ -131,7 +131,9 @@ impl Importer {
                 );
 
                 let mut f = File::open(format!("./output/{}s.csv", table.to_lowercase()).as_str())?;
-                client.copy_in(&*query, &[], &mut f)?;
+                let mut writer = client.copy_in(&*query)?;
+                std::io::copy(&mut f, &mut writer)?;
+                writer.finish()?;
             }
 
             client.execute("ALTER TABLE \"User\" ENABLE TRIGGER ALL", &[])?;
