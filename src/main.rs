@@ -139,6 +139,5 @@ fn main() -> crate::Result<()> {
     match opts {
         Opt::Generate(generate) => CsvGenerator::new(&generate).generate(),
         Opt::ImportPostgres(import_postgres) => Importer::new(&import_postgres)?.import(),
-        Opt::ImportSqlite {} => unimplemented!("SQLite import"),
     }
 }
