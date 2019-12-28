@@ -8,7 +8,7 @@ generator photon {
 }
 
 model User {
-  id         Int       @id @unique
+  id         Int       @id
   firstName  String
   lastName   String
   age        Int?
@@ -24,7 +24,7 @@ model User {
 }
 
 model Post {
-  id        Int       @id @unique
+  id        Int       @id
   content   String?
   author    User
   comments  Comment[]
@@ -36,25 +36,25 @@ model Post {
 }
 
 model Comment {
-  id        Int       @id @unique
+  id        Int      @id
   content   String?
   author    User
   post      Post
   likes     Like[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([author])
   @@index([post])
 }
 
 model Like {
-  id        Int       @id @unique
+  id        Int      @id
   user      User
   post      Post
   comment   Comment
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([user])
   @@index([post])
