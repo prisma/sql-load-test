@@ -2,11 +2,11 @@ use super::ser_date;
 use crate::Generator;
 use chrono::{DateTime, Utc};
 use csv::WriterBuilder;
+use indicatif::ProgressBar;
 use names::{Generator as NameGenerator, Name};
 use rand::{distributions::Alphanumeric, Rng};
 use serde_derive::Serialize;
 use std::io::Write;
-use indicatif::ProgressBar;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -17,6 +17,7 @@ pub struct User {
     email: String,
     first_name: String,
     id: usize,
+    unique: usize,
     last_name: String,
     password: String,
     #[serde(with = "ser_date")]
@@ -45,6 +46,7 @@ impl Default for User {
 
         Self {
             id: 0,
+            unique: 0,
             email: format!("{}.{}@prisma.io", first_name, last_name),
             created_at: Utc::now(),
             updated_at: Utc::now(),
@@ -71,6 +73,7 @@ impl Generator for User {
         for id in 1..=count {
             let mut user = User::default();
             user.id = id;
+            user.unique = count - id;
 
             wtr.serialize(user)?;
             pb.inc(1);

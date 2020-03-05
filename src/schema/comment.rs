@@ -2,17 +2,18 @@ use super::ser_date;
 use crate::Generator;
 use chrono::{DateTime, Utc};
 use csv::WriterBuilder;
+use indicatif::ProgressBar;
 use names::{Generator as NameGenerator, Name};
 use rand::seq::SliceRandom;
 use serde_derive::Serialize;
 use std::io::Write;
-use indicatif::ProgressBar;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Comment {
     content: String,
     id: usize,
+    unique: usize,
     author: usize,
     post: usize,
     #[serde(with = "ser_date")]
@@ -29,7 +30,10 @@ pub struct CommentContext {
 
 impl CommentContext {
     pub fn new(max_author: usize, max_post: usize) -> Self {
-        Self { max_author, max_post }
+        Self {
+            max_author,
+            max_post,
+        }
     }
 }
 
@@ -37,12 +41,13 @@ impl Default for Comment {
     fn default() -> Self {
         let mut gen = NameGenerator::with_naming(Name::Plain);
 
-        let content: Vec<String> = (1..10).map(|_| {
-            gen.next().unwrap().replace('-', " ").to_string()
-        }).collect();
+        let content: Vec<String> = (1..10)
+            .map(|_| gen.next().unwrap().replace('-', " ").to_string())
+            .collect();
 
         Self {
             id: 0,
+            unique: 0,
             author: 0,
             post: 0,
             created_at: Utc::now(),
@@ -55,7 +60,12 @@ impl Default for Comment {
 impl Generator for Comment {
     type Context = CommentContext;
 
-    fn generate<W>(writer: W, count: usize, pb: ProgressBar, ctx: Self::Context) -> crate::Result<()>
+    fn generate<W>(
+        writer: W,
+        count: usize,
+        pb: ProgressBar,
+        ctx: Self::Context,
+    ) -> crate::Result<()>
     where
         W: Write,
     {
@@ -71,6 +81,7 @@ impl Generator for Comment {
         for id in 1..=count {
             let mut comment = Comment::default();
             comment.id = id;
+            comment.unique = count - id;
             comment.author = *author_choices.choose(&mut rng).unwrap();
             comment.post = *post_choices.choose(&mut rng).unwrap();
 

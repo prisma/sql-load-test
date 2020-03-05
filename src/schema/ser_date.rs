@@ -1,5 +1,5 @@
-use serde::ser;
 use chrono::{DateTime, Utc};
+use serde::ser;
 
 pub fn serialize<S>(data: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
 where

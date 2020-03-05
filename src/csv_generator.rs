@@ -11,6 +11,7 @@ pub struct CsvGenerator {
     posts: usize,
     comments: usize,
     likes: usize,
+    friendships: usize,
     progress: MultiProgress,
 }
 
@@ -21,6 +22,7 @@ impl CsvGenerator {
             posts: opts.posts(),
             comments: opts.comments(),
             likes: opts.likes(),
+            friendships: opts.friendships(),
             progress: MultiProgress::new(),
         }
     }
@@ -30,6 +32,7 @@ impl CsvGenerator {
         self.generate_posts();
         self.generate_comments();
         self.generate_likes();
+        self.generate_friendships();
         self.progress.join_and_clear()?;
 
         Ok(())
@@ -98,13 +101,31 @@ impl CsvGenerator {
         })
     }
 
+    fn generate_friendships(&self) -> JoinHandle<crate::Result<()>> {
+        let users = self.users;
+        let friendships = self.friendships;
+        let file = File::create("./output/friendships.csv").unwrap();
+
+        let pb = self.progress.add(ProgressBar::new(friendships as u64));
+        pb.set_style(Self::progress_style("generating friendships"));
+
+        thread::spawn(move || {
+            schema::Friendship::generate(
+                file,
+                friendships,
+                pb,
+                schema::FriendshipContext::new(users),
+            )
+        })
+    }
+
     fn progress_style(name: &str) -> ProgressStyle {
         ProgressStyle::default_bar()
             .progress_chars("##-")
             .template(
                 &format!(
                     "{}: {{spinner:.green}} [{{elapsed_precise}}] {{wide_bar:.white/blue}} {{pos:>7}}/{{len:7}} ({{eta}})",
-                    pad_str(name, 19, Alignment::Right, None),
+                    pad_str(name, 22, Alignment::Right, None),
                 )
             )
     }

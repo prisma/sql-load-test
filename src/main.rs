@@ -50,6 +50,9 @@ pub struct Generate {
     #[structopt(short, long)]
     /// Number of likes to generate in the system. (default: users * 50)
     likes: Option<usize>,
+    #[structopt(short, long)]
+    /// Number of friendships to generate in the system. (default: users * 10)
+    friendships: Option<usize>,
 }
 
 #[derive(Debug, StructOpt, Clone)]
@@ -130,6 +133,10 @@ impl Generate {
 
     fn likes(&self) -> usize {
         self.likes.unwrap_or(self.users() * 50)
+    }
+
+    fn friendships(&self) -> usize {
+        self.friendships.unwrap_or(self.users() * 10)
     }
 }
 

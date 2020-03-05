@@ -2,11 +2,11 @@ use super::ser_date;
 use crate::Generator;
 use chrono::{DateTime, Utc};
 use csv::WriterBuilder;
+use indicatif::ProgressBar;
 use names::{Generator as NameGenerator, Name};
 use rand::seq::SliceRandom;
 use serde_derive::Serialize;
 use std::io::Write;
-use indicatif::ProgressBar;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -15,6 +15,7 @@ pub struct Post {
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
     id: usize,
+    unique: usize,
     #[serde(with = "ser_date")]
     updated_at: DateTime<Utc>,
     author: usize,
@@ -35,12 +36,13 @@ impl Default for Post {
     fn default() -> Self {
         let mut gen = NameGenerator::with_naming(Name::Plain);
 
-        let content: Vec<String> = (1..50).map(|_| {
-            gen.next().unwrap().replace('-', " ").to_string()
-        }).collect();
+        let content: Vec<String> = (1..50)
+            .map(|_| gen.next().unwrap().replace('-', " ").to_string())
+            .collect();
 
         Self {
             id: 0,
+            unique: 0,
             author: 0,
             created_at: Utc::now(),
             updated_at: Utc::now(),
@@ -52,7 +54,12 @@ impl Default for Post {
 impl Generator for Post {
     type Context = PostContext;
 
-    fn generate<W>(writer: W, count: usize, pb: ProgressBar, ctx: Self::Context) -> crate::Result<()>
+    fn generate<W>(
+        writer: W,
+        count: usize,
+        pb: ProgressBar,
+        ctx: Self::Context,
+    ) -> crate::Result<()>
     where
         W: Write,
     {
@@ -67,6 +74,7 @@ impl Generator for Post {
         for id in 1..=count {
             let mut post = Post::default();
             post.id = id;
+            post.unique = count - id;
             post.author = *author_choices.choose(&mut rng).unwrap();
 
             wtr.serialize(post)?;

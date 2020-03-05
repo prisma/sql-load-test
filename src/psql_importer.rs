@@ -24,8 +24,6 @@ impl Importer {
             opts.db_name(),
         );
 
-        dbg!(&conn_string);
-
         let manager = PostgresConnectionManager::new(conn_string.parse()?, NoTls);
         let pool = r2d2::Pool::builder()
             .max_size(4)
@@ -51,6 +49,7 @@ impl Importer {
                     "email",
                     "firstName",
                     "id",
+                    "unique",
                     "lastName",
                     "password",
                     "updatedAt",
@@ -58,16 +57,40 @@ impl Importer {
             ),
             (
                 "Post",
-                vec!["content", "createdAt", "id", "updatedAt", "author"],
+                vec![
+                    "content",
+                    "createdAt",
+                    "id",
+                    "unique",
+                    "updatedAt",
+                    "author",
+                ],
             ),
             (
                 "Comment",
-                vec!["content", "id", "author", "post", "createdAt", "updatedAt"],
+                vec![
+                    "content",
+                    "id",
+                    "unique",
+                    "author",
+                    "post",
+                    "createdAt",
+                    "updatedAt",
+                ],
             ),
             (
                 "Like",
-                vec!["id", "comment", "post", "user", "createdAt", "updatedAt"],
+                vec![
+                    "id",
+                    "unique",
+                    "comment",
+                    "post",
+                    "user",
+                    "createdAt",
+                    "updatedAt",
+                ],
             ),
+            ("_FriendShip", vec!["A", "B"]),
         ];
 
         let mut handles = Vec::with_capacity(tables.len());
@@ -130,7 +153,10 @@ impl Importer {
                     col_names.join(",")
                 );
 
-                let mut f = File::open(format!("./output/{}s.csv", table.to_lowercase()).as_str())?;
+                let mut f = File::open(
+                    format!("./output/{}s.csv", table.to_lowercase().replace('_', "")).as_str(),
+                )?;
+
                 let mut writer = client.copy_in(&*query)?;
                 std::io::copy(&mut f, &mut writer)?;
                 writer.finish()?;

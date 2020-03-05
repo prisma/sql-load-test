@@ -9,6 +9,7 @@ generator photon {
 
 model User {
   id         Int       @id
+  unique     Int       @unique
   firstName  String
   lastName   String
   age        Int?
@@ -25,6 +26,7 @@ model User {
 
 model Post {
   id        Int       @id
+  unique    Int       @unique
   content   String?
   author    User
   comments  Comment[]
@@ -36,7 +38,8 @@ model Post {
 }
 
 model Comment {
-  id        Int      @id
+  id        Int       @id
+  unique    Int       @unique
   content   String?
   author    User
   post      Post
@@ -49,7 +52,8 @@ model Comment {
 }
 
 model Like {
-  id        Int      @id
+  id        Int       @id
+  unique    Int       @unique
   user      User
   post      Post
   comment   Comment
