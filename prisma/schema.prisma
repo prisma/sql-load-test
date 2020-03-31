@@ -7,60 +7,62 @@ generator photon {
   provider = "photonjs"
 }
 
-model User {
-  id         Int       @id
-  unique     Int       @unique
-  firstName  String
-  lastName   String
-  age        Int?
-  email      String?
-  password   String?
-  posts      Post[]
-  comments   Comment[]
-  likes      Like[]
-  friendWith User[]    @relation("FriendShip")
-  friendOf   User[]    @relation("FriendShip")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-}
-
-model Post {
-  id        Int       @id
-  unique    Int       @unique
-  content   String?
-  author    User
-  comments  Comment[]
-  likes     Like[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([author])
-}
-
 model Comment {
-  id        Int       @id
-  unique    Int       @unique
+  author    Int
   content   String?
-  author    User
-  post      Post
-  likes     Like[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(dbgenerated())
+  id        Int      @default(autoincrement()) @id
+  post      Int
+  updatedAt DateTime @default(dbgenerated())
+  User      User     @relation(fields: [author], references: [id])
+  Post      Post     @relation(fields: [post], references: [id])
+  Like      Like[]
 
-  @@index([author])
-  @@index([post])
+  @@index([author], name: "Comment.author")
+  @@index([post], name: "Comment.post")
 }
 
 model Like {
-  id        Int       @id
-  unique    Int       @unique
-  user      User
-  post      Post
-  comment   Comment
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  comment   Int
+  createdAt DateTime @default(dbgenerated())
+  id        Int      @default(autoincrement()) @id
+  post      Int
+  updatedAt DateTime @default(dbgenerated())
+  user      Int
+  Comment   Comment  @relation(fields: [comment], references: [id])
+  Post      Post     @relation(fields: [post], references: [id])
+  User      User     @relation(fields: [user], references: [id])
 
-  @@index([user])
-  @@index([post])
-  @@index([comment])
+  @@index([comment], name: "Like.comment")
+  @@index([post], name: "Like.post")
+  @@index([user], name: "Like.user")
+}
+
+model Post {
+  author    Int
+  content   String?
+  createdAt DateTime  @default(dbgenerated())
+  id        Int       @default(autoincrement()) @id
+  updatedAt DateTime  @default(dbgenerated())
+  User      User      @relation(fields: [author], references: [id])
+  Comment   Comment[]
+  Like      Like[]
+
+  @@index([author], name: "Post.author")
+}
+
+model User {
+  age         Int?
+  createdAt   DateTime  @default(dbgenerated())
+  email       String?
+  firstName   String    @default("")
+  id          Int       @default(autoincrement()) @id
+  lastName    String    @default("")
+  password    String?
+  updatedAt   DateTime  @default(dbgenerated())
+  Comment     Comment[]
+  Like        Like[]
+  Post        Post[]
+  FriendsWith User[]    @relation("FriendShip", references: [id])
+  FriendOf    User[]    @relation("FriendShip", references: [id])
 }
