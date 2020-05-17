@@ -49,7 +49,6 @@ impl Importer {
                     "email",
                     "firstName",
                     "id",
-                    "unique",
                     "lastName",
                     "password",
                     "updatedAt",
@@ -61,7 +60,6 @@ impl Importer {
                     "content",
                     "createdAt",
                     "id",
-                    "unique",
                     "updatedAt",
                     "author",
                 ],
@@ -71,7 +69,6 @@ impl Importer {
                 vec![
                     "content",
                     "id",
-                    "unique",
                     "author",
                     "post",
                     "createdAt",
@@ -82,7 +79,6 @@ impl Importer {
                 "Like",
                 vec![
                     "id",
-                    "unique",
                     "comment",
                     "post",
                     "user",

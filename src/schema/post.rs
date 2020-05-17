@@ -15,7 +15,6 @@ pub struct Post {
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
     id: usize,
-    unique: usize,
     #[serde(with = "ser_date")]
     updated_at: DateTime<Utc>,
     author: usize,
@@ -42,7 +41,6 @@ impl Default for Post {
 
         Self {
             id: 0,
-            unique: 0,
             author: 0,
             created_at: Utc::now(),
             updated_at: Utc::now(),
@@ -74,7 +72,6 @@ impl Generator for Post {
         for id in 1..=count {
             let mut post = Post::default();
             post.id = id;
-            post.unique = count - id;
             post.author = *author_choices.choose(&mut rng).unwrap();
 
             wtr.serialize(post)?;

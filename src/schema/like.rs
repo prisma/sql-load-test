@@ -11,7 +11,6 @@ use std::io::Write;
 #[serde(rename_all = "camelCase")]
 pub struct Like {
     id: usize,
-    unique: usize,
     comment: usize,
     post: usize,
     user: usize,
@@ -42,7 +41,6 @@ impl Default for Like {
     fn default() -> Self {
         Self {
             id: 0,
-            unique: 0,
             user: 0,
             comment: 0,
             post: 0,
@@ -78,7 +76,6 @@ impl Generator for Like {
             let mut like = Like::default();
 
             like.id = id;
-            like.unique = count - id;
             like.user = *user_choices.choose(&mut rng).unwrap();
             like.post = *post_choices.choose(&mut rng).unwrap();
             like.comment = *comment_choices.choose(&mut rng).unwrap();
