@@ -13,7 +13,6 @@ use std::io::Write;
 pub struct Comment {
     content: String,
     id: usize,
-    unique: usize,
     author: usize,
     post: usize,
     #[serde(with = "ser_date")]
@@ -47,7 +46,6 @@ impl Default for Comment {
 
         Self {
             id: 0,
-            unique: 0,
             author: 0,
             post: 0,
             created_at: Utc::now(),
@@ -81,7 +79,6 @@ impl Generator for Comment {
         for id in 1..=count {
             let mut comment = Comment::default();
             comment.id = id;
-            comment.unique = count - id;
             comment.author = *author_choices.choose(&mut rng).unwrap();
             comment.post = *post_choices.choose(&mut rng).unwrap();
 
