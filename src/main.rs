@@ -7,6 +7,7 @@ use indicatif::ProgressBar;
 use psql_importer::Importer;
 use std::io::Write;
 use structopt::StructOpt;
+use tracing_subscriber::EnvFilter;
 
 pub type Result<T> = std::result::Result<T, anyhow::Error>;
 
@@ -142,6 +143,10 @@ impl Generate {
 
 fn main() -> crate::Result<()> {
     let opts = Opt::from_args();
+
+    tracing_subscriber::FmtSubscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
 
     match opts {
         Opt::Generate(generate) => CsvGenerator::new(&generate).generate(),
