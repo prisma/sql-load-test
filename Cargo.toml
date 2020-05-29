@@ -20,6 +20,8 @@ indoc = "0.3"
 r2d2 = "0.8"
 r2d2_postgres = "0.16.0-alpha.1"
 anyhow = "1.0.25"
+tracing = "0.1.14"
+tracing-subscriber = "0.2.5"
 
 [dependencies.chrono]
 features = ["serde"]

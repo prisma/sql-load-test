@@ -56,35 +56,15 @@ impl Importer {
             ),
             (
                 "Post",
-                vec![
-                    "content",
-                    "createdAt",
-                    "id",
-                    "updatedAt",
-                    "author",
-                ],
+                vec!["content", "createdAt", "id", "updatedAt", "author"],
             ),
             (
                 "Comment",
-                vec![
-                    "content",
-                    "id",
-                    "author",
-                    "post",
-                    "createdAt",
-                    "updatedAt",
-                ],
+                vec!["content", "id", "author", "post", "createdAt", "updatedAt"],
             ),
             (
                 "Like",
-                vec![
-                    "id",
-                    "comment",
-                    "post",
-                    "user",
-                    "createdAt",
-                    "updatedAt",
-                ],
+                vec!["id", "comment", "post", "user", "createdAt", "updatedAt"],
             ),
             ("_FriendShip", vec!["A", "B"]),
         ];
