@@ -103,10 +103,7 @@ impl Importer {
             let mut client = pool.get()?;
 
             client.execute(format!("SET search_path = \"{}\"", schema).as_str(), &[])?;
-            client.execute(
-                format!("ALTER TABLE \"{}\" DISABLE TRIGGER ALL", table).as_str(),
-                &[],
-            )?;
+            client.execute("SET session_replication_role = replica", &[])?;
 
             {
                 pb.set_message(format!("Deleting old {}s", table.to_lowercase()).as_str());
@@ -138,7 +135,7 @@ impl Importer {
                 writer.finish()?;
             }
 
-            client.execute("ALTER TABLE \"User\" ENABLE TRIGGER ALL", &[])?;
+            client.execute("SET session_replication_role = origin", &[])?;
 
             Ok(())
         })
