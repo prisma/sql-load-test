@@ -11,12 +11,12 @@ use std::io::Write;
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Comment {
-    content: String,
-    id: usize,
     author: usize,
-    post: usize,
+    content: String,
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
+    id: usize,
+    post: usize,
     #[serde(with = "ser_date")]
     updated_at: DateTime<Utc>,
 }
@@ -69,7 +69,7 @@ impl Generator for Comment {
     {
         let mut wtr = WriterBuilder::new()
             .has_headers(true)
-            .delimiter(b';')
+            .delimiter(b',')
             .from_writer(writer);
 
         let mut rng = rand::thread_rng();

@@ -11,13 +11,13 @@ use std::io::Write;
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Post {
+    author: usize,
     content: String,
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
     id: usize,
     #[serde(with = "ser_date")]
     updated_at: DateTime<Utc>,
-    author: usize,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -63,7 +63,7 @@ impl Generator for Post {
     {
         let mut wtr = WriterBuilder::new()
             .has_headers(true)
-            .delimiter(b';')
+            .delimiter(b',')
             .from_writer(writer);
 
         let mut rng = rand::thread_rng();

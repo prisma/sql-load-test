@@ -10,14 +10,14 @@ use std::io::Write;
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Like {
-    id: usize,
     comment: usize,
-    post: usize,
-    user: usize,
     #[serde(with = "ser_date")]
     created_at: DateTime<Utc>,
+    id: usize,
+    post: usize,
     #[serde(with = "ser_date")]
     updated_at: DateTime<Utc>,
+    user: usize,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -64,7 +64,7 @@ impl Generator for Like {
     {
         let mut wtr = WriterBuilder::new()
             .has_headers(true)
-            .delimiter(b';')
+            .delimiter(b',')
             .from_writer(writer);
 
         let mut rng = rand::thread_rng();
