@@ -11,11 +11,11 @@ included docker-compose file:
 docker-compose -f docker-compose/dev-postgres.yml up -d
 ```
 
-Install latest version of `prisma2` and generate the database schema:
+Install latest version of `prisma` and generate the database schema:
 
 ```shell
-npm install -g prisma2
-prisma2 lift up
+npm install -g @prisma/cli
+prisma migrate --experimental save && prisma migrate --experimental up
 ```
 
 Generate users/posts/comments/likes with the generator:
@@ -49,5 +49,7 @@ SUBCOMMANDS:
 ## Populate a SQLite database.
 
 - Generate the CSVs in the `output` directory with `sql-load-test generate`.
+- Change the datasource in the prisma schema
+- Change the CSV separator from ; to ,
 - Inspect the SQLite schema: the order of the columns in the SQL schema and the CSVs must match for the SQLite CSV import to work. Use the `xsv` command line tool (the `select` subcommand) to reorder the columns in the CSVs to match.
 - Import from the `sqlite3` prompt ([tutorial](https://www.sqlitetutorial.net/sqlite-import-csv/)).

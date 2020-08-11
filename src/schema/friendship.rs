@@ -37,7 +37,7 @@ impl Generator for Friendship {
     {
         let mut wtr = WriterBuilder::new()
             .has_headers(true)
-            .delimiter(b';')
+            .delimiter(b',')
             .from_writer(writer);
 
         let mut rng = rand::thread_rng();

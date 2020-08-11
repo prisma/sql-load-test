@@ -65,7 +65,7 @@ impl Generator for User {
     {
         let mut wtr = WriterBuilder::new()
             .has_headers(true)
-            .delimiter(b';')
+            .delimiter(b',')
             .from_writer(writer);
 
         for id in 1..=count {
