@@ -11,11 +11,11 @@ included docker-compose file:
 docker-compose -f docker-compose/dev-postgres.yml up -d
 ```
 
-Install latest version of `prisma2` and generate the database schema:
+Install latest version of `prisma` and generate the database schema:
 
 ```shell
-npm install -g prisma2
-prisma2 lift up
+npm install -g @prisma/cli
+prisma migrate save --name init --experimental && prisma migrate up --experimental
 ```
 
 Generate users/posts/comments/likes with the generator:
