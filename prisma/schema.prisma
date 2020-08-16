@@ -3,15 +3,15 @@ datasource db {
   url      = "postgresql://postgres:prisma@localhost:5432/postgres?schema=sql_load_test"
 }
 
-generator photon {
-  provider = "photonjs"
+generator client {
+  provider = "prisma-client-js"
 }
 
 model Comment {
   author    Int
   content   String?
   createdAt DateTime @default(dbgenerated())
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id
   post      Int
   updatedAt DateTime @default(dbgenerated())
   User      User     @relation(fields: [author], references: [id])
@@ -25,7 +25,7 @@ model Comment {
 model Like {
   comment   Int
   createdAt DateTime @default(dbgenerated())
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id
   post      Int
   updatedAt DateTime @default(dbgenerated())
   user      Int
@@ -42,7 +42,7 @@ model Post {
   author    Int
   content   String?
   createdAt DateTime  @default(dbgenerated())
-  id        Int       @default(autoincrement()) @id
+  id        Int       @id
   updatedAt DateTime  @default(dbgenerated())
   User      User      @relation(fields: [author], references: [id])
   Comment   Comment[]
@@ -56,7 +56,7 @@ model User {
   createdAt   DateTime  @default(dbgenerated())
   email       String?
   firstName   String    @default("")
-  id          Int       @default(autoincrement()) @id
+  id          Int       @id
   lastName    String    @default("")
   password    String?
   updatedAt   DateTime  @default(dbgenerated())
