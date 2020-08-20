@@ -8,42 +8,42 @@ generator client {
 }
 
 model Comment {
-  author    Int
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime
+  updatedAt DateTime
   content   String?
-  createdAt DateTime @default(dbgenerated())
-  id        Int      @id
   post      Int
-  updatedAt DateTime @default(dbgenerated())
+  author    Int
   User      User     @relation(fields: [author], references: [id])
   Post      Post     @relation(fields: [post], references: [id])
   Like      Like[]
 
-  @@index([author], name: "Comment.author")
   @@index([post], name: "Comment.post")
+  @@index([author], name: "Comment.author")
 }
 
 model Like {
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime
+  updatedAt DateTime
   comment   Int
-  createdAt DateTime @default(dbgenerated())
-  id        Int      @id
   post      Int
-  updatedAt DateTime @default(dbgenerated())
   user      Int
   Comment   Comment  @relation(fields: [comment], references: [id])
   Post      Post     @relation(fields: [post], references: [id])
   User      User     @relation(fields: [user], references: [id])
 
-  @@index([comment], name: "Like.comment")
-  @@index([post], name: "Like.post")
   @@index([user], name: "Like.user")
+  @@index([post], name: "Like.post")
+  @@index([comment], name: "Like.comment")
 }
 
 model Post {
-  author    Int
+  id        Int       @default(autoincrement()) @id
+  createdAt DateTime
+  updatedAt DateTime
   content   String?
-  createdAt DateTime  @default(dbgenerated())
-  id        Int       @id
-  updatedAt DateTime  @default(dbgenerated())
+  author    Int
   User      User      @relation(fields: [author], references: [id])
   Comment   Comment[]
   Like      Like[]
@@ -52,17 +52,17 @@ model Post {
 }
 
 model User {
-  age         Int?
-  createdAt   DateTime  @default(dbgenerated())
-  email       String?
+  id          Int       @default(autoincrement()) @id
+  createdAt   DateTime
+  updatedAt   DateTime
   firstName   String    @default("")
-  id          Int       @id
   lastName    String    @default("")
+  email       String?
   password    String?
-  updatedAt   DateTime  @default(dbgenerated())
+  age         Int?
   Comment     Comment[]
   Like        Like[]
   Post        Post[]
-  FriendsWith User[]    @relation("FriendShip", references: [id])
-  FriendOf    User[]    @relation("FriendShip", references: [id])
+  FriendsWith User[]    @relation("FriendShip")
+  FriendOf    User[]    @relation("FriendShip")
 }
