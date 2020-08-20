@@ -54,3 +54,5 @@ By default only the users need to be provided and other items are multiplied fro
 - Generate the CSVs in the `output` directory with `sql-load-test generate`.
 - Inspect the SQLite schema: the order of the columns in the SQL schema and the CSVs must match for the SQLite CSV import to work. Use the `xsv` command line tool (the `select` subcommand) to reorder the columns in the CSVs to match.
 - Import from the `sqlite3` prompt ([tutorial](https://www.sqlitetutorial.net/sqlite-import-csv/)).
+
+TODO add commands required for the generated CSV files
